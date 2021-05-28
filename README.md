@@ -1,3 +1,5 @@
 # parR
-Calculates the best values of parallel/series resistors, to achieve a value outside the E24 range. 
-Sometimes you need a resistor value outside the E24 range. When it's critical, for instance in filter design, you'll have to rely on parallel (or series) resistors. Often a time consuming task. This simple but straightforward utility calculates the very best solution for any target value, assuming one, or two resp. three resistors in parallel. To enhance the precision, an optional series resistor is advised. Nothing special, just a time saver.
+If a resistor value, (a [big] detailed value or one outside the E24 range) is needed, a solution is to place resistors in parallel or in series. This app examines both solutions.
+Parallel resistors: All possible combinations of two and three resistors are inspected. The very best solution is presented. If unsuccessful, the app lowers the target value in one Ohm steps, down to -5%. If relevant, an extra series resistor is advised.
+Series resistors: Three different algorithms are executed. It depends on the target value whether the outcomes differ or not. All calculated arrays are presented.
+It is up to the end user to select his/her most appropriate outcome. In the rare case of little success, it may help to start with a somewhat (acceptable) higher target value.
