@@ -45,7 +45,10 @@ class parRFrame extends JFrame {
 	String popupmsg2;  //possibly used in calculateSer, first approach
 
 	/**
-	Looks for a value in the 2D matrix, containing E24 sums.
+	* Looks for a value in the 2D matrix, containing E24 sums.
+	* @param	matrix	a two dimensional arry containing the sums of E24 values 
+	*	@param	val			the double value to be searched for in the matrix
+	* @return					true or false
 	*/
 	public boolean isInMatrix(double[][] matrix, double val) {
 		val = round(val,1);
@@ -61,10 +64,12 @@ class parRFrame extends JFrame {
 	}
 
 	/**
-	Method returns a formatted string, common for the presentation of resistor values:
-	containing K and M for Kilo (1000) and Mega (1000000) resp., and using this letters 
-	as a delimitor.<br>
-	For instance 4K7 means 4700 Ohms.
+	*	Method returns a formatted string, common for the presentation of resistor values:
+	*	containing K and M for Kilo (1000) and Mega (1000000) resp., and using this letters 
+	*	as a delimitor.<br>
+	*	For instance 4K7 means 4700 Ohms.
+	*	@param	arg	the double value to be formatted
+	*	@return			formatted string
 	*/
 	public String formatR(double arg) {
 		int m=0;
@@ -92,7 +97,10 @@ class parRFrame extends JFrame {
 	}
 	
 	/**
-	* Looks for resistor pattern #.# in the E24 range
+	* Looks with a resistor value (pattern #.#) in the E24 range
+	* @param	val	the value with pattern #.# to be searched
+	*	@param	E24	the E24 array
+	*	@return	true or false
 	*/
 	public boolean isInE24(double val, double[] E24) { 
 		for (int i=0;i<E24.length;i++){
@@ -102,9 +110,12 @@ class parRFrame extends JFrame {
 	}
 
 	/**
-		Calculates the resistor value, needed to improve the end result,
-	  achieved with parallel resistors.<br>
-	  In most cases, it results in a small value, only to decrease the already minor error.
+	*	Calculates the resistor value, needed to improve the end result,
+	*  achieved with parallel resistors.<br>To be used in series with the parallel ones.
+	*  In most cases, it results in a small value, only to decrease the already minor error.
+	*	@param	target	the value initially asked for by the user
+	*	@param Rtarget	the result value achieved by this app
+	*	@return					the value of the series resistor
 	*/	
 	public double calcSeriesR(double target, double Rtarget) {
 		double[] serieR={0,0};
@@ -139,13 +150,14 @@ class parRFrame extends JFrame {
 	
 	
 	/**
-	During the calculation, String 'popupmsg' is build up. When ready, this method presents
-	a popup window, rendering this string with all calculation results.	<br>
-	Is called by method calculate(Double target).
+	* During the calculation, String 'popupmsg' is build up. When ready, this method presents
+	* a popup window, rendering this string with all calculation results.	<br>
+	* Is called by method calculate(Double target).
+	*	@param	msg			the message containing all calculation results, both parallel and series
+	*	@param	target	the target value asked for by the end user
 	*/
 	public void popup(String msg, double target) {
 		targetInput.setText("");
-		//log.setText("Done");
 		
 		javax.swing.border.Border empty = javax.swing.BorderFactory.createEmptyBorder(10,10,10,10);
 		String ms = "All RESULTS FOR TARGET "+target+" OHM\n\nWITH PARALLEL RESISTORS:\n";
@@ -162,8 +174,9 @@ class parRFrame extends JFrame {
 	}
 	
 	/**
-	* Sorts an array from high to low.
-	*
+	* Sorts an double[] array from high to low.
+	*	@param	values	the array to be sorted
+	*	@return					the sorted array
 	*/
 	public double[] sortHiLo(double[] values) {
 	 	Arrays.sort(values);
@@ -175,7 +188,13 @@ class parRFrame extends JFrame {
 	 	}
 		return arr;
 	}
-	
+	/**
+	* Looks for a sum value in the 2D matrix. If found, it creates a MatrixResult
+	* which is stored in the Vector
+	*	@param val		the sum value to look for
+	*	@param matrix	the two dimensional arry in which E24 value sums are stored
+	*	@return				Vector containing all found records
+	*/	
 	public Vector inMatrix(double val, double[][] matrix){
 		DecimalFormat df0 = new DecimalFormat("#");
 		DecimalFormat df1 = new DecimalFormat("#.#");
@@ -216,8 +235,11 @@ class parRFrame extends JFrame {
 
 
 	/** ===================================================================================
-		Main method. Calls both methods for calculating the parallel and series resistors
-		and presents the results. 
+		* calulate is the principal method: It contains the two methods for calculating the 			
+		* parallel and series resistors (resp. calculatePar() and calculateSer()). 
+		* It then presents the results in the popup window. 
+		*	@param target		the target value asked for by the end user
+		*	@version 2.0 May 2021
 		========================================================================================
 	*/
 	public void calculate (Double target) {
@@ -238,14 +260,14 @@ class parRFrame extends JFrame {
 	}
 	
 	/**
-	Tries to achieve the target value by using two or three resistors in parallel. 
-	Brute force approach: all possible combinations with all possible E24 values 
-	of 2 resp. 3 resistors are examined, and the very best is presented.<br> 
-	In some cases, an acceptable end result cannot be achieved. If so, the target value is 
-	lowered in one Ohm steps, until -5% of the target value. <br>
-	Although the final outcome in most cases is very precise, at any error >0  
-	an extra series resistor is calculated, further lowering the error factor. 
-	<br>See method calcSeriesR(target, Rtarget).
+	* Tries to achieve the target value by using two or three resistors in parallel. 
+	* Brute force approach: all possible combinations with all possible E24 values 
+	* of 2 resp. 3 resistors are examined, and the very best is presented.<br> 
+	* In some cases, an acceptable end result cannot be achieved. If so, the target value is 
+	* lowered in one Ohm steps, until -5% of the target value. <br>
+	* Although the final outcome in most cases is very precise, at any error greater than 0  
+	* an extra series resistor is calculated, further lowering the error factor. 
+	*	@param	target	the target value asked for by the end user.
 	*/
 	public void calculatePar(Double target) {
 		double Rtarget=0, Rres=0, Ra=0, Rb=0, Rc=0, R1=0, R2=0, R3=0, diff=0;
@@ -402,7 +424,13 @@ class parRFrame extends JFrame {
 	//============================================================================================
 	
 
-	//add a found value to the array, containing all found values
+	/**
+	* Add a found value to a double[] array.<br>
+	* Three global arrays are used to store results in method calculateSer()
+	*	@param arr[]	The array to be increased with the found value
+	*	@param val		The value to be added
+	*	@return				Incremented array
+	*/
 	public double[] addVal(double arr[], double val) {
 		int len =arr.length;
 		double array[] = new double[len+1];
@@ -411,7 +439,12 @@ class parRFrame extends JFrame {
     return array;
     }
 
-	//calculates the sum of all values in the array, containing all found values
+	/**
+	* Calculates the sum of all double values in the array.<br>
+	* Three global arrays are used to store results in method calculateSer()
+	*	@param arr[]	The array to be used
+	*	@return				The calculated sum
+	*/
 	public double sum(double[] arr) {
 		double d=0;
 		for (int i=0;i<arr.length;i++) {
@@ -438,8 +471,9 @@ class parRFrame extends JFrame {
 	
 	
 	/**
-	* Method uses three algorithmes and results in three arrays of E24 conformant values
-	*
+	* Method uses three algorithmes and results in three arrays containing E24 conformant values
+	*	The first algorithm creates either an array or a string
+	*	@param	target 	the target value asked for by the end user
 	*/	
 	public void calculateSer(Double target) {
 		double Rtarget=target; //Rtarget is the remaining value in progress. Ready if <1.
